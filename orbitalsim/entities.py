@@ -19,18 +19,19 @@ def add_vectors(vector1, vector2):
     return (mag, angle)
 
 class Entity():
-    def __init__(self, position, diameter, mass, speed, angle):
+    def __init__(self, position, diameter, mass):
         self.x, self.y = position
         self.diameter = diameter
         self.mass = mass
         self.density = self.mass / (4/3 * math.pi * (self.diameter/2)**3)
+        self.colour = (255, 255, 255)
 
-        self.speed = speed
-        self.angle = angle
+        self.speed = 0
+        self.angle = 0
 
     def move(self):
         self.x += math.sin(self.angle) * self.speed
-        self.y -= math.sin(self.angle) * self.speed # subtract because of pygame's coord system
+        self.y -= math.cos(self.angle) * self.speed # subtract because of pygame's coord system
 
     def accelerate(self, acceleration):
         self.speed, self.angle = add_vectors((self.speed, self.angle), acceleration)
@@ -38,16 +39,16 @@ class Entity():
     def attract(self, other):
         dx = self.x - other.x
         dy = self.y - other.y
-        theta = math.atan2(dx, dy)
+        theta = math.atan2(dy, dx)
         distance = math.hypot(dx, dy)
 
         # calculate attractive force due to gravity using Newton's law of universal gravitation:
         # F = G * m1 * m2 / r^2
-        force = const.G * self.mass * other.mass / (distance ** 2)
+        force = 1.48818517e-34 * self.mass * other.mass / (distance ** 2)
 
         # accelerate both bodies towards each other by acceleration vector a = F/m, rearranged from Newton's second law
-        self.accelerate((theta - (math.pi / 2), force / self.mass))
-        other.accelerate((theta + (math.pi / 2), force / other.mass))
+        self.accelerate((force / self.mass, theta - (math.pi / 2)))
+        other.accelerate((force / other.mass, theta + (math.pi / 2)))
 
 
 
