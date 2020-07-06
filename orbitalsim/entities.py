@@ -34,12 +34,28 @@ class Entity():
         self.speed = 0
         self.angle = 0
 
+        # sim_rate: externally set, describes the number of days that pass in the simulation for every real life second (realtime is 1.2e-5)
+        # delta_t: the time in ms between frames used to keep simulation rate consistent
+        self.sim_rate = 1
+        self.delta_t = 16
+
+    def days_per_update(self):
+        # returns the number of days that pass in a given interval delta_t
+        return 1 / ( (1000 / self.sim_rate) / self.delta_t )
+
     def move(self):
-        self.x += math.sin(self.angle) * self.speed
-        self.y -= math.cos(self.angle) * self.speed # subtract because of pygame's coord system
+        # adjust speed for days past per frame
+        # calculates next x, y position 
+        dpu = self.days_per_update()
+        self.x += math.sin(self.angle) * self.speed * dpu
+        self.y -= math.cos(self.angle) * self.speed * dpu # subtract because of pygame's coord system
 
     def accelerate(self, acceleration):
-        self.speed, self.angle = add_vectors((self.speed, self.angle), acceleration)
+        # adjusts magnitude of acceleration for days past per frame
+        # combine apply acceleration to velocity vector
+        acc_mag, acc_angle = acceleration
+        acc_mag *= self.days_per_update()
+        self.speed, self.angle = add_vectors((self.speed, self.angle), (acc_mag, acc_angle))
 
     def attract(self, other):
         dx = self.x - other.x

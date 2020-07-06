@@ -21,8 +21,9 @@ class OrbitalSystem():
 
         self.entities.append(entity)
 
-    def update(self):
+    def update(self, delta_t):
         for i, entity in enumerate(self.entities):
+            entity.delta_t = delta_t
             entity.move()
             entity.accelerate((0, 0))
 
