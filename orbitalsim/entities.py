@@ -1,5 +1,5 @@
 import math
-import constants as const
+from astropy.constants import G
 
 def add_vectors(vector1, vector2):
     # vectors are quantities with a magnitude and direction
@@ -20,6 +20,11 @@ def add_vectors(vector1, vector2):
 
 class Entity():
     def __init__(self, position, diameter, mass):
+        # position: tuple (x, y) describing the distance in AU from the centre of the system (0, 0)
+        # diameter: measured in AU
+        # mass: measured in kg
+        # speed: measured in AU/day
+        # angle: measured in radians
         self.x, self.y = position
         self.diameter = diameter
         self.mass = mass
@@ -44,7 +49,8 @@ class Entity():
 
         # calculate attractive force due to gravity using Newton's law of universal gravitation:
         # F = G * m1 * m2 / r^2
-        force = 1.48818517e-34 * self.mass * other.mass / (distance ** 2)
+        # for consistency, G = [AU^3 * kg^-1 * d^-2]
+        force = G.to('AU3 / (kg d2)').value * self.mass * other.mass / (distance ** 2)
 
         # accelerate both bodies towards each other by acceleration vector a = F/m, rearranged from Newton's second law
         self.accelerate((force / self.mass, theta - (math.pi / 2)))
