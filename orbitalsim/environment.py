@@ -7,17 +7,17 @@ class OrbitalSystem():
 
         self.bg = (0, 0, 0)
 
-    def add_entity(self, **kargs):
-        # diameter = kargs.get('diameter', 1.5e7)
-        # mass = kargs.get('mass', 6e24)
-        diameter = kargs.get('diameter', 10)
-        mass = kargs.get('mass', 6e24)
-
-        position = kargs.get('position', (diameter, diameter))
-
+    def add_entity(
+        self,
+        diameter = 8.5e-5,
+        mass = 6e24,
+        position = (0, 0),
+        speed = 0,
+        angle = 0
+    ):
         entity = Entity(position, diameter, mass)
-        entity.speed = kargs.get('speed', 0)
-        entity.angle = kargs.get('angle', 0)
+        entity.speed = speed
+        entity.angle = angle
 
         self.entities.append(entity)
 
