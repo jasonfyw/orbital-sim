@@ -1,5 +1,7 @@
 import pygame
 import math
+import datetime
+
 from environment import OrbitalSystem
 import entities
 
@@ -15,17 +17,14 @@ class Simulation():
         # scale: magnification ratio between AU and displayed pixels (default of 1AU = 300px)
         # entity_scale: additional magnification on the entities for visibility purposes
         # sim_rate: how many days pass in the simulation for every real-life second (default of 1 day per second)
-
-        pygame.init()
         self.width, self.height = dimensions
 
         self.scale = scale
         self.entity_scale = entity_scale
         self.sim_rate = sim_rate 
 
-        self.window = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption('Orbital Simulation')
-        self.paused = False
+        self.date = datetime.date.today()
+        self.date_accumulator = 0
 
         self.solar_system = OrbitalSystem()
 
@@ -36,12 +35,23 @@ class Simulation():
         self.solar_system.add_entity(position = (0, 1), speed = 0.017298543, angle = math.pi / 2) # earth
         self.solar_system.add_entity(position = (0, 1.524), speed = 0.0138612, angle = math.pi / 2, diameter = 4.53215e-5, mass = 6.4e23) # mars
 
+    def update_date(self, delta_t):
+        self.date_accumulator += 1 / ( (1000 / self.sim_rate) / delta_t )
+        if self.date_accumulator >= 1:
+            self.date += datetime.timedelta(days = self.date_accumulator)
+            self.date_accumulator = 0
+
     def start(self):
+        pygame.init()
+        self.window = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption('Orbital Simulation')
+        self.paused = False
 
         # pass the sim_rate to each entity in the simulation
         for entity in self.solar_system.entities:
             entity.sim_rate = self.sim_rate
 
+        font = pygame.font.SysFont('Menlo', 18)
         clock = pygame.time.Clock()
         running = True
 
@@ -59,7 +69,10 @@ class Simulation():
             if not self.paused:
                 self.solar_system.update(delta_t)
 
-            self.window.fill(self.solar_system.bg)
+                self.window.fill(self.solar_system.bg)
+                date_display = font.render(self.date.strftime("%d %b %Y, %H:%M"), False, (200, 200, 200))
+                self.window.blit(date_display, (0, 0))
+                self.update_date(delta_t)
 
             for entity in self.solar_system.entities:
                 x = int((entity.x * self.scale) + (self.width / 2))
