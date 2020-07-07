@@ -1,6 +1,8 @@
 import pygame
 import math
 import datetime
+from astroquery.jplhorizons import Horizons
+from astropy.time import Time
 
 from environment import OrbitalSystem
 import entities
@@ -10,7 +12,7 @@ class Simulation():
         self, 
         dimensions = (1000, 1000), 
         scale = 300, 
-        entity_scale = 20, 
+        entity_scale = 10, 
         sim_rate = 1
     ):
         # dimensions: (width, height) of the window in pixels
@@ -23,7 +25,7 @@ class Simulation():
         self.entity_scale = entity_scale
         self.sim_rate = sim_rate 
 
-        self.date = datetime.date.today()
+        self.date = datetime.datetime.today()
         self.date_accumulator = 0
 
         self.solar_system = OrbitalSystem()
@@ -31,9 +33,34 @@ class Simulation():
     def add_preset_solar_system(self):
         # add the sun, earth and mars with roughly accurate positioning and speed
         # mass in kg, position and diameter in AU
-        self.solar_system.add_entity(position = (0, 0), mass = 2e30, diameter = 9.46e-3) # the sun
-        self.solar_system.add_entity(position = (0, 1), speed = 0.017298543, angle = math.pi / 2) # earth
-        self.solar_system.add_entity(position = (0, 1.524), speed = 0.0138612, angle = math.pi / 2, diameter = 4.53215e-5, mass = 6.4e23) # mars
+        planet_data = [(2e30, 9.5e-3), (3.3e23, 3.2e-5), (4.9e24, 8.1e-5), (6e24, 8.5e-5), (6.4e23, 4.5e-5)]
+
+        for i in range(len(planet_data)):
+            mass, diameter = planet_data[i]
+            x, y, speed, angle = self.get_positioning(i)
+
+            self.solar_system.add_entity(position = (x, y), speed = speed, angle = angle, mass = mass, diameter = diameter)
+            print(i, math.atan2(y, x)* (360 / (2*math.pi)), angle * (360 / (2*math.pi)))
+
+        # self.solar_system.add_entity(position = (0, 0), mass = 2e30, diameter = 9.5e-3)
+        # self.solar_system.add_entity(position = (0.2643661726308766, -0.9817409264640321), speed = 0.016917189529441202, angle = math.pi)
+        
+    
+    def get_positioning(self, nasaid):
+        obj = Horizons(id = nasaid, location = '@sun', epochs = Time(self.date).jd, id_type = 'id').vectors()
+
+        # get the components of position and velocity from JPL SSD 
+        x, y = obj['x'], obj['y']
+        vx, vy = obj['vx'], obj['vy']
+        speed = math.hypot(vx, vy)
+
+        # calculate angle of velocity by finding the tangent to the orbit
+        # pygame specific: horizontally reflect the angle due to reversed y-axis
+        angle = math.pi - ((2 * math.pi) - math.atan2(y, x))
+
+        return x, y, speed, angle
+
+
 
     def update_date(self, delta_t):
         self.date_accumulator += 1 / ( (1000 / self.sim_rate) / delta_t )
@@ -51,7 +78,7 @@ class Simulation():
         for entity in self.solar_system.entities:
             entity.sim_rate = self.sim_rate
 
-        font = pygame.font.SysFont('Menlo', 18)
+        font = pygame.font.SysFont('Courier New', 24)
         clock = pygame.time.Clock()
         running = True
 
@@ -76,7 +103,7 @@ class Simulation():
 
             for entity in self.solar_system.entities:
                 x = int((entity.x * self.scale) + (self.width / 2))
-                y = int((entity.y * self.scale) + (self.height / 2))
+                y = int((-entity.y * self.scale) + (self.height / 2)) # reflected across y-axis to compensate for pygame's reversed axes
                 r = int(entity.diameter * self.scale * self.entity_scale / 2 )
                 pygame.draw.circle(self.window, entity.colour, (x, y), r, 0)
 
