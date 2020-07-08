@@ -1,6 +1,8 @@
 from simulation import Simulation
 
-
+"""
+Parent class for presets
+"""
 class Preset():
     def __init__(self, dimensions, sim_rate):
         self.simulation = Simulation(dimensions, sim_rate = sim_rate)
@@ -21,6 +23,9 @@ class Preset():
     def start(self):
         self.simulation.start()
 
+"""
+Child classes for each preset
+"""
 class InnerSolarSystem(Preset):
     def __init__(self, dimensions = (800, 800), sim_rate = 3):
         super().__init__(dimensions, sim_rate)

@@ -18,13 +18,18 @@ def add_vectors(vector1, vector2):
 
     return (mag, angle)
 
+"""
+Main entity class
+"""
 class Entity():
-    def __init__(self, position, diameter, mass, e, a):
+    def __init__(self, position, diameter, mass, e = 0, a = 1):
         # position: tuple (x, y) describing the distance in AU from the centre of the system (0, 0)
         # diameter: measured in AU
         # mass: measured in kg
-        # speed: measured in AU/day
-        # angle: measured in radians
+        # speed: magnitude of initial velocity measured in AU/day
+        # angle: angle of initial velocity given in rad
+        # (if applicable) e: orbit eccentricity, 0-1
+        # (if applicable) a: semi-major axis measured in AU
         self.x, self.y = position
         self.diameter = diameter
         self.mass = mass
@@ -44,6 +49,10 @@ class Entity():
     def days_per_update(self):
         # returns the number of days that pass in a given interval delta_t
         return 1 / ( (1000 / self.sim_rate) / self.delta_t )
+
+    """
+    Physics calculations for movement
+    """
 
     def move(self):
         # adjust speed for days past per frame

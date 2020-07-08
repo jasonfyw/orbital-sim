@@ -1,4 +1,3 @@
-import random
 from entities import Entity
 
 class OrbitalSystem():
