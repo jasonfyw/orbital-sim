@@ -47,6 +47,12 @@ class Simulation():
         self.offsetx = self.width / 2
         self.offsety = self.height / 2
 
+    def set_scale(self, max_a):
+        if self.scale < 0:
+            new_scale = min(self.width, self.height) / (2 * max_a) 
+            self.scale = new_scale
+            self.default_scale = new_scale
+
 
     def add_custom_entity(
         self,
@@ -86,29 +92,32 @@ class Simulation():
 
     
     def get_horizons_positioning(self, entity_id, observer_id):
-        obj = Horizons(
-            id = entity_id, 
-            location = '@{}'.format(observer_id),
-            epochs = Time(self.date).jd,
-            id_type='id'
-        )
-        vectors = obj.vectors()
-        elements = obj.elements()
+        if not entity_id == observer_id:
+            obj = Horizons(
+                id = entity_id, 
+                location = '@{}'.format(observer_id),
+                epochs = Time(self.date).jd,
+                id_type='id'
+            )
+            vectors = obj.vectors()
+            elements = obj.elements()
 
-        # get the eccentricity (e) and semimajor axis (a) 
-        e = elements['e']
-        a = elements['a']
+            # get the eccentricity (e) and semimajor axis (a) 
+            e = elements['e'].data[0]
+            a = elements['a'].data[0]
 
-        # get the components of position and velocity from JPL SSD 
-        x, y = vectors['x'], vectors['y']
-        vx, vy = vectors['vx'], vectors['vy']
-        speed = math.hypot(vx, vy)
+            # get the components of position and velocity from JPL SSD 
+            x, y = vectors['x'], vectors['y']
+            vx, vy = vectors['vx'], vectors['vy']
+            speed = math.hypot(vx, vy)
 
-        # calculate angle of velocity by finding the tangent to the orbit
-        # pygame specific: horizontally reflect the angle due to reversed y-axis
-        angle = math.pi - ((2 * math.pi) - math.atan2(y, x))
+            # calculate angle of velocity by finding the tangent to the orbit
+            # pygame specific: horizontally reflect the angle due to reversed y-axis
+            angle = math.pi - ((2 * math.pi) - math.atan2(y, x))
 
-        return x, y, speed, angle, e, a
+            return x, y, speed, angle, e, a
+        else:
+            return 0, 0, 0, 0, 0, 0
 
 
     def update_date(self, delta_t):
@@ -140,11 +149,6 @@ class Simulation():
                 self.zoom(2)
             elif event.key == pygame.K_r:
                 self.reset_zoom()
-
-    def set_scale(self, max_a):
-        if self.scale < 0:
-            padding = 20
-            self.scale = min(self.width, self.height) / (2 * max_a) - padding
 
     def start(self):
         pygame.init()
@@ -180,7 +184,7 @@ class Simulation():
             for entity in self.solar_system.entities:
                 x = int((entity.x * self.scale) + self.offsetx)
                 y = int((-entity.y * self.scale) + self.offsety) # reflected across y-axis to compensate for pygame's reversed axes
-                r = int(entity.diameter * self.scale * self.entity_scale / 2 )
+                r = abs(int(entity.diameter * self.scale * self.entity_scale / 2 ))
                 pygame.draw.circle(self.window, entity.colour, (x, y), r, 0)
 
             pygame.display.flip()
