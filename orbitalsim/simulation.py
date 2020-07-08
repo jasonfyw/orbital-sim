@@ -34,16 +34,13 @@ class Simulation():
         # add the sun, earth and mars with roughly accurate positioning and speed
         # mass in kg, position and diameter in AU
         planet_data = [(2e30, 9.5e-3), (3.3e23, 3.2e-5), (4.9e24, 8.1e-5), (6e24, 8.5e-5), (6.4e23, 4.5e-5)]
+        id_list = ['Sun'] + [i for i in range(1, len(planet_data))]
 
-        for i in range(len(planet_data)):
+        for i, id_ in enumerate(id_list):
             mass, diameter = planet_data[i]
-            x, y, speed, angle = self.get_positioning(i)
+            x, y, speed, angle = self.get_positioning(id_)
 
             self.solar_system.add_entity(position = (x, y), speed = speed, angle = angle, mass = mass, diameter = diameter)
-            print(i, math.atan2(y, x)* (360 / (2*math.pi)), angle * (360 / (2*math.pi)))
-
-        # self.solar_system.add_entity(position = (0, 0), mass = 2e30, diameter = 9.5e-3)
-        # self.solar_system.add_entity(position = (0.2643661726308766, -0.9817409264640321), speed = 0.016917189529441202, angle = math.pi)
         
     
     def get_positioning(self, nasaid):
@@ -59,7 +56,6 @@ class Simulation():
         angle = math.pi - ((2 * math.pi) - math.atan2(y, x))
 
         return x, y, speed, angle
-
 
 
     def update_date(self, delta_t):
@@ -111,7 +107,7 @@ class Simulation():
             delta_t = clock.tick(60)
 
 def main():
-    solar_system = Simulation((1000, 1000), sim_rate = 3)
+    solar_system = Simulation((1000, 1000), sim_rate = 10)
     solar_system.add_preset_solar_system()
     solar_system.start()
 
