@@ -11,7 +11,7 @@ class Simulation():
     def __init__(
         self, 
         dimensions = (1000, 1000), 
-        scale = 300, 
+        scale = -1, 
         entity_scale = 10, 
         sim_rate = 1
     ):
@@ -50,17 +50,39 @@ class Simulation():
 
     def add_custom_entity(
         self,
-        diameter = 8.5e-5,
-        mass = 6e24,
-        position = (0, 0),
+        diameter,
+        mass,
+        position,
         speed = 0,
-        angle = 0
+        angle = 0,
+        e = 0,
+        a = None
     ):
-        self.solar_system.add_entity(position = position, speed = speed, angle = angle, mass = mass, diameter = diameter)
+        if not a:
+            x, y = position
+            a = math.hypot(x, y)
+
+        self.solar_system.add_entity(
+            position = position, 
+            speed = speed, 
+            angle = angle, 
+            mass = mass, 
+            diameter = diameter,
+            e = e,
+            a = a
+        )
 
     def add_horizons_entity(self, entity_id, observer_id, mass, diameter):
-        x, y, speed, angle = self.get_horizons_positioning(entity_id, observer_id)
-        self.solar_system.add_entity(position = (x, y), speed = speed, angle = angle, mass = mass, diameter = diameter)
+        x, y, speed, angle, e, a = self.get_horizons_positioning(entity_id, observer_id)
+        self.solar_system.add_entity(
+            position = (x, y), 
+            speed = speed, 
+            angle = angle, 
+            mass = mass, 
+            diameter = diameter,
+            e = e,
+            a = a
+        )
 
     
     def get_horizons_positioning(self, entity_id, observer_id):
@@ -69,18 +91,24 @@ class Simulation():
             location = '@{}'.format(observer_id),
             epochs = Time(self.date).jd,
             id_type='id'
-        ).vectors()
+        )
+        vectors = obj.vectors()
+        elements = obj.elements()
+
+        # get the eccentricity (e) and semimajor axis (a) 
+        e = elements['e']
+        a = elements['a']
 
         # get the components of position and velocity from JPL SSD 
-        x, y = obj['x'], obj['y']
-        vx, vy = obj['vx'], obj['vy']
+        x, y = vectors['x'], vectors['y']
+        vx, vy = vectors['vx'], vectors['vy']
         speed = math.hypot(vx, vy)
 
         # calculate angle of velocity by finding the tangent to the orbit
         # pygame specific: horizontally reflect the angle due to reversed y-axis
         angle = math.pi - ((2 * math.pi) - math.atan2(y, x))
 
-        return x, y, speed, angle
+        return x, y, speed, angle, e, a
 
 
     def update_date(self, delta_t):
@@ -113,6 +141,11 @@ class Simulation():
             elif event.key == pygame.K_r:
                 self.reset_zoom()
 
+    def set_scale(self, max_a):
+        if self.scale < 0:
+            padding = 20
+            self.scale = min(self.width, self.height) / (2 * max_a) - padding
+
     def start(self):
         pygame.init()
         self.window = pygame.display.set_mode((self.width, self.height))
@@ -120,8 +153,11 @@ class Simulation():
         self.paused = False
 
         # pass the sim_rate to each entity in the simulation
+        semimajor_axes = []
         for entity in self.solar_system.entities:
             entity.sim_rate = self.sim_rate
+            semimajor_axes.append(entity.a)
+        self.set_scale(max(semimajor_axes))
 
         font = pygame.font.SysFont('Courier New', 24)
         clock = pygame.time.Clock()

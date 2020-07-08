@@ -5,10 +5,6 @@ class InnerSolarSystem():
     def __init__(self, dimensions = (800, 800), sim_rate = 3):
         self.simulation = Simulation(dimensions, sim_rate = sim_rate)
         self.entity_data = {
-            'sun': {
-                'm': 1.99e30,
-                'd': 9.29e-3
-            },
             '1': {
                 'm': 3.30e23,
                 'd': 3.26e-5
@@ -30,7 +26,15 @@ class InnerSolarSystem():
         self.add_entities()
 
     def add_entities(self):
+        # add the sun manually because Horizons elements() doesn't work on the sun
+        self.simulation.add_custom_entity(
+            diameter = 9.29e-3,
+            mass = 1.99e30,
+            position = (0, 0)
+        )
+
         observer_id = 'sun'
+
         for id_ in self.entity_data.keys():
             mass = self.entity_data[id_]['m']
             diameter = self.entity_data[id_]['d']
