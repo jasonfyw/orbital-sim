@@ -1,11 +1,11 @@
 import pygame
 import math
+import sys
 import datetime
 from astroquery.jplhorizons import Horizons
 from astropy.time import Time
 
 from environment import OrbitalSystem
-import entities
 
 class Simulation():
     def __init__(
@@ -47,21 +47,29 @@ class Simulation():
         self.offsetx = self.width / 2
         self.offsety = self.height / 2
 
-    def add_preset_solar_system(self):
-        # add the sun, earth and mars with roughly accurate positioning and speed
-        # mass in kg, position and diameter in AU
-        planet_data = [(2e30, 9.5e-3), (3.3e23, 3.2e-5), (4.9e24, 8.1e-5), (6e24, 8.5e-5), (6.4e23, 4.5e-5)]
-        id_list = ['Sun'] + [i for i in range(1, len(planet_data))]
 
-        for i, id_ in enumerate(id_list):
-            mass, diameter = planet_data[i]
-            x, y, speed, angle = self.get_positioning(id_)
+    def add_custom_entity(
+        self,
+        diameter = 8.5e-5,
+        mass = 6e24,
+        position = (0, 0),
+        speed = 0,
+        angle = 0
+    ):
+        self.solar_system.add_entity(position = position, speed = speed, angle = angle, mass = mass, diameter = diameter)
 
-            self.solar_system.add_entity(position = (x, y), speed = speed, angle = angle, mass = mass, diameter = diameter)
-        
+    def add_horizons_entity(self, entity_id, observer_id, mass, diameter):
+        x, y, speed, angle = self.get_horizons_positioning(entity_id, observer_id)
+        self.solar_system.add_entity(position = (x, y), speed = speed, angle = angle, mass = mass, diameter = diameter)
+
     
-    def get_positioning(self, nasaid):
-        obj = Horizons(id = nasaid, location = '@sun', epochs = Time(self.date).jd, id_type = 'id').vectors()
+    def get_horizons_positioning(self, entity_id, observer_id):
+        obj = Horizons(
+            id = entity_id, 
+            location = '@{}'.format(observer_id),
+            epochs = Time(self.date).jd,
+            id_type='id'
+        ).vectors()
 
         # get the components of position and velocity from JPL SSD 
         x, y = obj['x'], obj['y']
@@ -84,6 +92,8 @@ class Simulation():
     def handle_event(self, event):
         if event.type == pygame.QUIT:
             self.running = False
+            pygame.quit()
+            sys.exit()
         if event.type == pygame.KEYDOWN:
             # pause simulation using spacebar
             if event.key == pygame.K_SPACE:
@@ -139,13 +149,3 @@ class Simulation():
 
             pygame.display.flip()
             delta_t = clock.tick(60)
-
-def main():
-    solar_system = Simulation((1000, 1000), sim_rate = 10)
-    solar_system.add_preset_solar_system()
-    solar_system.start()
-
-
-
-if __name__ == "__main__":
-    main()
