@@ -1,11 +1,18 @@
 from simulation import Simulation
 
 """
-Parent class for presets
+Parent class for presets – inherits from Simulation
 """
-class Preset():
-    def __init__(self, dimensions, sim_rate):
-        self.simulation = Simulation(dimensions, sim_rate = sim_rate)
+class Preset(Simulation):
+    def __init__(
+        self, 
+        dimensions = (800, 800), 
+        scale = -1, 
+        entity_scale = 10, 
+        sim_rate = 3,
+        fullscreen = False
+    ):
+        super().__init__(dimensions, scale, entity_scale, sim_rate, fullscreen)
 
     def add_entities(self, observer_id):
 
@@ -13,22 +20,25 @@ class Preset():
             mass = self.entity_data[id_]['m']
             diameter = self.entity_data[id_]['d']
 
-            self.simulation.add_horizons_entity(
+            self.add_horizons_entity(
                 entity_id = id_,
                 observer_id = observer_id,
                 mass = mass,
                 diameter = diameter
             )
 
-    def start(self):
-        self.simulation.start()
-
 """
 Child classes for each preset
 """
 class InnerSolarSystem(Preset):
-    def __init__(self, dimensions = (800, 800), sim_rate = 3):
-        super().__init__(dimensions, sim_rate)
+    def __init__(self, 
+        dimensions = (800, 800), 
+        scale = -1, 
+        entity_scale = 10, 
+        sim_rate = 3,
+        fullscreen = False
+    ):
+        super().__init__(dimensions, scale, entity_scale, sim_rate, fullscreen)
 
         self.entity_data = {
             'sun': {
@@ -56,8 +66,14 @@ class InnerSolarSystem(Preset):
         self.add_entities('sun')
 
 class SolarSystem(Preset):
-    def __init__(self, dimensions = (800, 800), sim_rate = 3):
-        super().__init__(dimensions, sim_rate)
+   def __init__(self, 
+        dimensions = (800, 800), 
+        scale = -1, 
+        entity_scale = 10, 
+        sim_rate = 3,
+        fullscreen = False
+    ):
+        super().__init__(dimensions, scale, entity_scale, sim_rate, fullscreen)
 
         self.entity_data = {
             'sun': {

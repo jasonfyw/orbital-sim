@@ -10,15 +10,17 @@ from environment import OrbitalSystem
 class Simulation():
     def __init__(
         self, 
-        dimensions = (1000, 1000), 
+        dimensions = (800, 800), 
         scale = -1, 
         entity_scale = 10, 
-        sim_rate = 1
+        sim_rate = 3,
+        fullscreen = False
     ):
         # dimensions: (width, height) of the window in pixels
         # scale: magnification ratio between AU and displayed pixels (default of -1: automatically calculated by self.set_scale())
         # entity_scale: additional magnification on the entities for visibility purposes
         # sim_rate: how many days pass in the simulation for every real-life second (default of 1 day per second)
+        # fullscreen: boolean – if true, automatically overrides dimensions
         self.width, self.height = dimensions
         self.offsetx = self.width / 2
         self.offsety = self.height / 2
@@ -33,6 +35,7 @@ class Simulation():
 
         self.solar_system = OrbitalSystem()
 
+        self.fullscreen = fullscreen
         self.running = False
 
     """ 
@@ -174,6 +177,10 @@ class Simulation():
                 self.zoom(2)
             elif event.key == pygame.K_r:
                 self.reset_zoom()
+            elif event.key == pygame.K_q:
+                self.running = False
+                pygame.quit()
+                sys.exit()
 
     """
     Main simulation function
@@ -185,7 +192,17 @@ class Simulation():
         Setup 
         """
         pygame.init()
-        self.window = pygame.display.set_mode((self.width, self.height))
+
+        if self.fullscreen:
+            flag = pygame.FULLSCREEN
+
+            display_info = pygame.display.Info()
+            self.width = display_info.current_w
+            self.height = display_info.current_h
+        else:
+            flag = 0
+
+        self.window = pygame.display.set_mode((self.width, self.height), flag)
         pygame.display.set_caption('Orbital Simulation')
         self.paused = False
         delta_t = 16
