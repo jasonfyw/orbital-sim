@@ -118,3 +118,25 @@ class SolarSystem(Preset):
             }
         }
         self.add_entities('sun')
+
+class EarthMoon(Preset):
+    def __init__(self, 
+        dimensions = (800, 800), 
+        scale = -1, 
+        entity_scale = 1, 
+        sim_rate = 3,
+        fullscreen = False
+    ):
+        super().__init__(dimensions, scale, entity_scale, sim_rate, fullscreen)
+
+        self.entity_data = {
+            '3': {
+                'm': 6e24,
+                'd': 8.5e-5
+            },
+            '301': { 
+                'm': 7.34e22,
+                'd': 2.3e-5
+            }
+        }
+        self.add_entities('3')
