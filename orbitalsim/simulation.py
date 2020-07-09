@@ -48,6 +48,8 @@ class Simulation():
 
     def zoom(self, zoom):
         self.scale *= zoom
+        self.offsetx *= zoom
+        self.offsety *= zoom
 
     def reset_zoom(self):
         self.scale = self.default_scale
@@ -172,9 +174,9 @@ class Simulation():
             elif event.key == pygame.K_DOWN:
                 self.scroll(dy = -30)
             elif event.key == pygame.K_MINUS:
-                self.zoom(0.5)
+                self.zoom(0.667)
             elif event.key == pygame.K_EQUALS:
-                self.zoom(2)
+                self.zoom(1.5)
             elif event.key == pygame.K_r:
                 self.reset_zoom()
             elif event.key == pygame.K_q:
