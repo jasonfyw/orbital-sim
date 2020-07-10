@@ -22,6 +22,11 @@ class Simulation():
         # sim_rate: how many days pass in the simulation for every real-life second (default of 1 day per second)
         # fullscreen: boolean – if true, automatically overrides dimensions
         self.width, self.height = dimensions
+
+        # dx, dy: offset in px as a result of panning with arrow keys
+        # offsetx, offsety: constants to centre (0,0) in the window
+        self.dx = 0
+        self.dy = 0
         self.offsetx = self.width / 2
         self.offsety = self.height / 2
 
@@ -33,6 +38,7 @@ class Simulation():
         self.date = datetime.datetime.today()
         self.date_accumulator = 0
 
+        # initialise the Orbital System object
         self.solar_system = OrbitalSystem()
 
         self.fullscreen = fullscreen
@@ -43,18 +49,20 @@ class Simulation():
     """
 
     def scroll(self, dx = 0, dy = 0):
-        self.offsetx += dx
-        self.offsety += dy
+        # change offset to scroll/pan around the screen
+        relative_scale = self.scale / self.default_scale
+        self.dx += dx / relative_scale
+        self.dy += dy / relative_scale
 
     def zoom(self, zoom):
+        # adjust zoom level and zoom offset
         self.scale *= zoom
-        self.offsetx *= zoom
-        self.offsety *= zoom
 
     def reset_zoom(self):
+        # reset all viewmodel variables to default
         self.scale = self.default_scale
-        self.offsetx = self.width / 2
-        self.offsety = self.height / 2
+        self.dx = 0
+        self.dy = 0
 
     def set_scale(self, max_a):
         # automatically calculate and set the scale based on the largest semi-major axis in the array of entities;
@@ -241,8 +249,11 @@ class Simulation():
             self.window.blit(date_display, (0, 0))
 
             for entity in self.solar_system.entities:
-                x = int((entity.x * self.scale) + self.offsetx)
-                y = int((-entity.y * self.scale) + self.offsety) # reflected across y-axis to compensate for pygame's reversed axes
+                # calculate pygame x, y coords 
+                # this zooming stuff/scale is super sketchy yikes
+                relative_scale = self.scale / self.default_scale
+                x = int(relative_scale * ((self.scale * entity.x) + self.dx) + self.offsetx)
+                y = int(relative_scale * ((self.scale * -entity.y) + self.dy) + self.offsety) # reflected across y-axis to compensate for pygame's reversed axes
                 r = abs(int(entity.diameter * self.scale * self.entity_scale / 2 ))
                 pygame.draw.circle(self.window, entity.colour, (x, y), r, 0)
 
