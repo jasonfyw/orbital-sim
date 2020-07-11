@@ -74,6 +74,9 @@ class Simulation():
             self.scale = new_scale
             self.default_scale = new_scale
 
+    def change_sim_rate(self, speed_ratio):
+        self.sim_rate *= speed_ratio
+
     """
     Adding entities to simulation
     """
@@ -195,6 +198,10 @@ class Simulation():
                 self.zoom(1.5)
             elif event.key == pygame.K_r:
                 self.reset_zoom()
+            elif event.key == pygame.K_PERIOD:
+                self.change_sim_rate(2)
+            elif event.key == pygame.K_COMMA:
+                self.change_sim_rate(0.5)
             elif event.key == pygame.K_l:
                 self.show_labels = not self.show_labels
             elif event.key == pygame.K_q:
@@ -260,6 +267,7 @@ class Simulation():
 
             entity_labels = []
             for entity in self.solar_system.entities:
+                entity.sim_rate = self.sim_rate
                 # calculate pygame x, y coords 
                 # this zooming stuff/scale is super sketchy yikes
                 relative_scale = self.scale / self.default_scale
