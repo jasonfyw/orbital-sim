@@ -34,7 +34,7 @@ class InnerSolarSystem(Preset):
     def __init__(self, 
         dimensions = (800, 800), 
         scale = -1, 
-        entity_scale = 10, 
+        entity_scale = 1, 
         sim_rate = 3,
         fullscreen = False
     ):
@@ -69,7 +69,7 @@ class SolarSystem(Preset):
    def __init__(self, 
         dimensions = (800, 800), 
         scale = -1, 
-        entity_scale = 10, 
+        entity_scale = 1, 
         sim_rate = 3,
         fullscreen = False
     ):
@@ -124,7 +124,7 @@ class EarthMoon(Preset):
         dimensions = (800, 800), 
         scale = -1, 
         entity_scale = 1, 
-        sim_rate = 3,
+        sim_rate = 1,
         fullscreen = False
     ):
         super().__init__(dimensions, scale, entity_scale, sim_rate, fullscreen)
@@ -135,7 +135,7 @@ class EarthMoon(Preset):
                 'd': 8.5e-5
             },
             '301': { 
-                'm': 7.34e22,
+                'm': 7.342e22,
                 'd': 2.3e-5
             }
         }

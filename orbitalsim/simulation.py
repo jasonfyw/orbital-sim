@@ -43,6 +43,7 @@ class Simulation():
 
         self.fullscreen = fullscreen
         self.running = False
+        self.paused = False
 
     """ 
     Viewmodel control
@@ -209,12 +210,12 @@ class Simulation():
             display_info = pygame.display.Info()
             self.width = display_info.current_w
             self.height = display_info.current_h
+            self.offsetx = self.width / 2
+            self.offsety = self.height / 2
         else:
             flag = 0
-
         self.window = pygame.display.set_mode((self.width, self.height), flag)
         pygame.display.set_caption('Orbital Simulation')
-        self.paused = False
         delta_t = 16
 
         # pass the sim_rate to each entity in the simulation;
@@ -225,7 +226,7 @@ class Simulation():
             semimajor_axes.append(entity.a)
         self.set_scale(max(semimajor_axes))
 
-        font = pygame.font.SysFont('Courier New', 24)
+        font = pygame.font.SysFont('Courier New', 20)
         clock = pygame.time.Clock()
         self.running = True
         
