@@ -235,7 +235,7 @@ class Simulation():
             semimajor_axes.append(entity.a)
         self.set_scale(max(semimajor_axes))
 
-        font = pygame.font.SysFont('Courier New', 20)
+        font = pygame.font.Font('fonts/Inconsolata.ttf', 14)
         clock = pygame.time.Clock()
         self.running = True
         
@@ -274,7 +274,7 @@ class Simulation():
                     entity.colour = (243, 145, 50)
                     if r < 2:
                         r = 2
-                        
+
                 pygame.draw.circle(self.window, entity.colour, (x, y), r, 0)
 
                 label = font.render(entity.name, False, (180, 180, 180))
