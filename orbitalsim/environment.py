@@ -1,4 +1,4 @@
-from entities import Entity
+from orbitalsim.entities import Entity
 
 class OrbitalSystem():
     def __init__(self):

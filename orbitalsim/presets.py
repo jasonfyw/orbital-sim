@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from simulation import Simulation
+from orbitalsim.simulation import Simulation
 
 logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 logging.getLogger().setLevel(logging.INFO)
