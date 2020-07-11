@@ -1,6 +1,10 @@
+import logging
 import sys
 
 from simulation import Simulation
+
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+logging.getLogger().setLevel(logging.INFO)
 
 """
 Parent class for presets – inherits from Simulation
@@ -28,8 +32,7 @@ class Preset(Simulation):
                 mass = mass,
                 diameter = diameter
             )
-            sys.stdout.write('\rAdded entity {} of {}'.format(i + 1, len(self.entity_data)))
-            sys.stdout.flush()
+            logging.info('Added entity {} of {}'.format(i + 1, len(self.entity_data)))
 
 """
 Child classes for each preset
