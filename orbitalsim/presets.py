@@ -1,3 +1,5 @@
+import sys
+
 from simulation import Simulation
 
 """
@@ -8,7 +10,7 @@ class Preset(Simulation):
         self, 
         dimensions = (800, 800), 
         scale = -1, 
-        entity_scale = 10, 
+        entity_scale = 5, 
         sim_rate = 3,
         fullscreen = False
     ):
@@ -16,7 +18,7 @@ class Preset(Simulation):
 
     def add_entities(self, observer_id):
 
-        for id_ in self.entity_data.keys():
+        for i, id_ in enumerate(self.entity_data.keys()):
             mass = self.entity_data[id_]['m']
             diameter = self.entity_data[id_]['d']
 
@@ -26,6 +28,8 @@ class Preset(Simulation):
                 mass = mass,
                 diameter = diameter
             )
+            sys.stdout.write('\rAdded entity {} of {}'.format(i + 1, len(self.entity_data)))
+            sys.stdout.flush()
 
 """
 Child classes for each preset
@@ -34,7 +38,7 @@ class InnerSolarSystem(Preset):
     def __init__(self, 
         dimensions = (800, 800), 
         scale = -1, 
-        entity_scale = 1, 
+        entity_scale = 5, 
         sim_rate = 3,
         fullscreen = False
     ):
@@ -69,7 +73,7 @@ class SolarSystem(Preset):
    def __init__(self, 
         dimensions = (800, 800), 
         scale = -1, 
-        entity_scale = 1, 
+        entity_scale = 5, 
         sim_rate = 3,
         fullscreen = False
     ):
