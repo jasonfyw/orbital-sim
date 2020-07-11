@@ -266,6 +266,15 @@ class Simulation():
                 x = int(relative_scale * ((self.scale * entity.x) + self.dx) + self.offsetx)
                 y = int(relative_scale * ((self.scale * -entity.y) + self.dy) + self.offsety) # reflected across y-axis to compensate for pygame's reversed axes
                 r = abs(int(entity.diameter * self.scale * self.entity_scale / 2 ))
+
+                # additional stuff to make entities look nicer at large distances
+                if r < 1 and self.scale > 300:
+                    r = 2
+                if entity.name == 'Sun (10)':
+                    entity.colour = (243, 145, 50)
+                    if r < 2:
+                        r = 2
+                        
                 pygame.draw.circle(self.window, entity.colour, (x, y), r, 0)
 
                 label = font.render(entity.name, False, (180, 180, 180))
