@@ -14,9 +14,10 @@ class OrbitalSystem():
         speed = 0,
         angle = 0,
         e = 0,
-        a = 1
+        a = 1,
+        name = ''
     ):
-        entity = Entity(position, diameter, mass, e, a)
+        entity = Entity(position, diameter, mass, e, a, name)
         entity.speed = speed
         entity.angle = angle
 

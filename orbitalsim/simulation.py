@@ -42,6 +42,7 @@ class Simulation():
         self.solar_system = OrbitalSystem()
 
         self.fullscreen = fullscreen
+        self.show_labels = True
         self.running = False
         self.paused = False
 
@@ -85,7 +86,8 @@ class Simulation():
         speed = 0,
         angle = 0,
         e = 0,
-        a = None
+        a = None,
+        name = ''
     ):
         # diameter: measured in AU
         # mass: measured in kg
@@ -94,6 +96,7 @@ class Simulation():
         # angle: angle of initial velocity given in rad
         # (if applicable) e: eccentricity of the entity's orbit ranging from 0-1
         # (if applicable) a: semi-major axis of the entity's orbit measured in AU
+        # (if applicable) name: str to display next to the entity when labels turned on
         if not a:
             x, y = position
             a = math.hypot(x, y)
@@ -110,7 +113,7 @@ class Simulation():
 
     def add_horizons_entity(self, entity_id, observer_id, mass, diameter):
         # entity_id, observer_id: the numerical ids designated by JPL SSD Horizons
-        x, y, speed, angle, e, a = self.get_horizons_positioning(entity_id, observer_id)
+        x, y, speed, angle, e, a, name = self.get_horizons_positioning(entity_id, observer_id)
 
         self.solar_system.add_entity(
             position = (x, y), 
@@ -119,23 +122,26 @@ class Simulation():
             mass = mass, 
             diameter = diameter,
             e = e,
-            a = a
+            a = a,
+            name = name
         )
     
     def get_horizons_positioning(self, entity_id, observer_id):
-        if not entity_id == observer_id:
-            obj = Horizons(
+        obj = Horizons(
                 id = entity_id, 
                 location = '@{}'.format(observer_id),
                 epochs = Time(self.date).jd,
                 id_type='id'
             )
+
+        if not entity_id == observer_id:
             vectors = obj.vectors()
             elements = obj.elements()
 
             # get the eccentricity (e) and semimajor axis (a) 
             e = elements['e'].data[0]
             a = elements['a'].data[0]
+            name = elements['targetname'].data[0].replace('Barycenter ', '')
 
             # get the components of position and velocity from JPL SSD 
             x, y = vectors['x'], vectors['y']
@@ -146,11 +152,12 @@ class Simulation():
             # pygame specific: horizontally reflect the angle due to reversed y-axis
             angle = math.pi - ((2 * math.pi) - math.atan2(y, x))
 
-            return x, y, speed, angle, e, a
+            return x, y, speed, angle, e, a, name
         else:
             # special case for the central body of a system (e.g. the sun)
             # obj.elements() does not work for when entity_id and observer_id are the same
-            return 0, 0, 0, 0, 0, 0
+            name = obj.vectors()['targetname'].data[0].replace('Barycenter ', '')
+            return 0, 0, 0, 0, 0, 0, name
 
     """
     Simulation functions
@@ -188,6 +195,8 @@ class Simulation():
                 self.zoom(1.5)
             elif event.key == pygame.K_r:
                 self.reset_zoom()
+            elif event.key == pygame.K_l:
+                self.show_labels = not self.show_labels
             elif event.key == pygame.K_q:
                 self.running = False
                 pygame.quit()
@@ -249,6 +258,7 @@ class Simulation():
             date_display = font.render(self.date.strftime("%d %b %Y, %H:%M"), False, (200, 200, 200))
             self.window.blit(date_display, (0, 0))
 
+            entity_labels = []
             for entity in self.solar_system.entities:
                 # calculate pygame x, y coords 
                 # this zooming stuff/scale is super sketchy yikes
@@ -257,6 +267,14 @@ class Simulation():
                 y = int(relative_scale * ((self.scale * -entity.y) + self.dy) + self.offsety) # reflected across y-axis to compensate for pygame's reversed axes
                 r = abs(int(entity.diameter * self.scale * self.entity_scale / 2 ))
                 pygame.draw.circle(self.window, entity.colour, (x, y), r, 0)
+
+                label = font.render(entity.name, False, (180, 180, 180))
+                entity_labels.append((label, (x + 3 + r, y + 3 + r)))
+
+            if self.show_labels:
+                for label in entity_labels:
+                    text, position = label
+                    self.window.blit(text, position)
 
             pygame.display.flip()
             delta_t = clock.tick(60)

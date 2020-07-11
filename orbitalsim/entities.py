@@ -22,7 +22,7 @@ def add_vectors(vector1, vector2):
 Main entity class
 """
 class Entity():
-    def __init__(self, position, diameter, mass, e = 0, a = 1):
+    def __init__(self, position, diameter, mass, e = 0, a = 1, name = ''):
         # position: tuple (x, y) describing the distance in AU from the centre of the system (0, 0)
         # diameter: measured in AU
         # mass: measured in kg
@@ -37,6 +37,7 @@ class Entity():
         self.e = e
         self.a = a
         self.colour = (255, 255, 255)
+        self.name = name
 
         self.speed = 0
         self.angle = 0
