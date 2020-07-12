@@ -6,6 +6,8 @@ You can choose from several included preset arrangements or create your own simu
 
 Precise positioning and movement vectors are obtained through built-in access to JPL’s HORIZONS system, a resource that provides precise data for objects in our solar system.
 
+![](media/innersolarsystem_example.gif)
+
 ## Installing
 ### Dependencies
 orbital-sim requires the following:
