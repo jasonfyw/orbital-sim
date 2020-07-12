@@ -1,5 +1,7 @@
 # orbital-sim
 
+![PyPI](https://img.shields.io/pypi/v/orbital-sim) ![PyPI - License](https://img.shields.io/pypi/l/orbital-sim) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/orbital-sim)
+
 A customisable and interactive Python simulation build over PyGame that models **the orbits of celestial bodies in 2D space** using Newton’s law of universal gravitation!
 
 You can choose from several included **preset arrangements** or create your own **simulation configuration from scratch!**
