@@ -83,20 +83,20 @@ class Simulation():
 
     def add_custom_entity(
         self,
-        diameter,
-        mass,
         position,
+        mass,
         speed = 0,
         angle = 0,
+        diameter = 1e-5,
         e = 0,
         a = None,
         name = ''
     ):
-        # diameter: measured in AU
-        # mass: measured in kg
         # position: tuple (x, y) describing the distance in AU from the centre of the system (0, 0)
         # speed: magnitude of initial velocity measured in AU/day
         # angle: angle of initial velocity given in rad
+        # mass: measured in kg
+        # diameter: measured in AU
         # (if applicable) e: eccentricity of the entity's orbit ranging from 0-1
         # (if applicable) a: semi-major axis of the entity's orbit measured in AU
         # (if applicable) name: str to display next to the entity when labels turned on
@@ -114,7 +114,7 @@ class Simulation():
             a = a
         )
 
-    def add_horizons_entity(self, entity_id, observer_id, mass, diameter):
+    def add_horizons_entity(self, entity_id, observer_id, mass, diameter = 1e-5):
         # entity_id, observer_id: the numerical ids designated by JPL SSD Horizons
         x, y, speed, angle, e, a, name = self.get_horizons_positioning(entity_id, observer_id)
 
