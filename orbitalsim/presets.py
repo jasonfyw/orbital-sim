@@ -16,9 +16,10 @@ class Preset(Simulation):
         scale = -1, 
         entity_scale = 5, 
         sim_rate = 3,
+        start_date = None,
         fullscreen = False
     ):
-        super().__init__(dimensions, scale, entity_scale, sim_rate, fullscreen)
+        super().__init__(dimensions, scale, entity_scale, sim_rate, start_date, fullscreen)
 
     def add_entities(self, observer_id):
 
@@ -43,9 +44,10 @@ class InnerSolarSystem(Preset):
         scale = -1, 
         entity_scale = 5, 
         sim_rate = 3,
+        start_date = None,
         fullscreen = False
     ):
-        super().__init__(dimensions, scale, entity_scale, sim_rate, fullscreen)
+        super().__init__(dimensions, scale, entity_scale, sim_rate, start_date, fullscreen)
 
         self.entity_data = {
             'sun': {
@@ -78,9 +80,10 @@ class SolarSystem(Preset):
         scale = -1, 
         entity_scale = 5, 
         sim_rate = 3,
+        start_date = None,
         fullscreen = False
     ):
-        super().__init__(dimensions, scale, entity_scale, sim_rate, fullscreen)
+        super().__init__(dimensions, scale, entity_scale, sim_rate, start_date, fullscreen)
 
         self.entity_data = {
             'sun': {
@@ -132,9 +135,10 @@ class EarthMoon(Preset):
         scale = -1, 
         entity_scale = 1, 
         sim_rate = 1,
+        start_date = None,
         fullscreen = False
     ):
-        super().__init__(dimensions, scale, entity_scale, sim_rate, fullscreen)
+        super().__init__(dimensions, scale, entity_scale, sim_rate, start_date, fullscreen)
 
         self.entity_data = {
             '3': {

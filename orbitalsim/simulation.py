@@ -14,6 +14,7 @@ class Simulation():
         scale = -1, 
         entity_scale = 10, 
         sim_rate = 3,
+        start_date = None,
         fullscreen = False
     ):
         # dimensions: (width, height) of the window in pixels
@@ -35,7 +36,10 @@ class Simulation():
         self.entity_scale = entity_scale
         self.sim_rate = sim_rate 
 
-        self.date = datetime.datetime.today()
+        if start_date:
+            self.date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+        else:
+            self.date = datetime.datetime.today()
         self.date_accumulator = 0
 
         # initialise the Orbital System object
