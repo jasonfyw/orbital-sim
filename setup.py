@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="orbital-sim",
-    version="0.9.1",
+    version="0.9.2",
     description="A simple physics engine build over a PyGame simulation to model planetary orbits in space",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -25,5 +25,5 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=["pygame", "astropy", "astroquery"],
-    download_url="https://github.com/jasonfyw/orbital-sim/archive/v0.9.0.tar.gz"
+    download_url="https://github.com/jasonfyw/orbital-sim/archive/v0.9.1.tar.gz"
 )
