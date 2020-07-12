@@ -1,6 +1,7 @@
 import pygame
 import math
 import sys
+import os
 import datetime
 from astroquery.jplhorizons import Horizons
 from astropy.time import Time
@@ -246,7 +247,8 @@ class Simulation():
             semimajor_axes.append(entity.a)
         self.set_scale(max(semimajor_axes))
 
-        font = pygame.font.Font('orbitalsim/fonts/Inconsolata.ttf', 14)
+        font_dir = '{}/fonts/Inconsolata.ttf'.format(os.path.dirname(__file__))
+        font = pygame.font.Font(font_dir, 14)
         clock = pygame.time.Clock()
         self.running = True
         
