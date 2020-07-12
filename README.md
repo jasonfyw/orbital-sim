@@ -1,8 +1,8 @@
 # orbital-sim
 
-A customisable and interactive Python simulation build over PyGame that models the orbits of celestial bodies in 2D space using Newton’s law of universal gravitation!
+A customisable and interactive Python simulation build over PyGame that models **the orbits of celestial bodies in 2D space** using Newton’s law of universal gravitation!
 
-You can choose from several included preset arrangements or create your own simulation configuration from scratch!
+You can choose from several included **preset arrangements** or create your own **simulation configuration from scratch!**
 
 Precise positioning and movement vectors are obtained through built-in access to JPL’s HORIZONS system, a resource that provides precise data for objects in our solar system.
 
@@ -23,7 +23,7 @@ $ pip install orbital-sim
 ```
 
 ## Usage
-Once you have the package installed, you’re good to go! From here, you can either try out one of the preset configurations that come with the module, or you can delve into creating your own orbital simulation! 
+Once you have the package installed, you’re good to go! From here, you can either try out one of the preset configurations that come with the module, or you can delve into creating your own orbital simulation! Details for both of these are explained below.
 
 ### Preset configurations
 ---
@@ -49,6 +49,7 @@ from orbitalsim.presets import PresetName
 
 Next, instantiate the preset simulation and pass through any parameters if you wish to do so. You can choose to leave everything to its default value by not including anything in the parentheses:
 ```python
+# A preset with default settings
 s = PresetName()
 ```
  Or manually set any or all of the following parameters:
@@ -63,6 +64,7 @@ s = PresetName()
 
 For example:
 ```python
+# A preset with all its parameters tweaked
 s = PresetName(
     dimensions = (500, 700),
     scale = 250,
@@ -187,7 +189,6 @@ Once everything has been setup, call the `start` function of the simulation obje
 s.start()
 ```
 That's it! That's all there is to getting a custom simulation up and running!
-
 
 
 
