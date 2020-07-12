@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="orbital-sim",
-    version="1.0.0",
+    version="0.9.0",
     description="A simple physics engine build over a PyGame simulation to model planetary orbits in space",
     long_description=README,
     long_description_content_type="text/markdown",
