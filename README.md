@@ -31,7 +31,7 @@ Once you have the package installed, you’re good to go! From here, you can eit
 ---
 `presets.py` contains a number of orbital systems with all the celestial bodies already specified, so all that needs to be done is to import it, configure the simulation and get it running. 
 
-The following are the available presets and the bodies that are included in them – details to using them are right after:
+The following are the available presets and the bodies that are included in them – details to using them are in the next section:
 
 | Preset             | Description                                                                      |
 |------------------------|----------------------------------------------------------------------------------|
@@ -41,7 +41,7 @@ The following are the available presets and the bodies that are included in them
 
 **Importing presets**
 
-In either your Python shell or a new Python file, import a specific preset configuration:
+In either your Python shell or a new Python file, import a specific preset configuration from the module:
 ```python
 from orbitalsim.presets import PresetName
 ```
@@ -62,7 +62,7 @@ s = PresetName()
 * `start_date` – the date to start the simulation from, in format **yyyy-mm-dd**
 * `fullscreen` – a boolean for whether the window should be fullscreen or not
 
-*Tip:* go to **Setting up a custom simulation** to find out more about these parameters.
+*Tip:* go to **Setting up a custom simulation** section to find out more about these parameters.
 
 For example:
 ```python
