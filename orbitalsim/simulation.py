@@ -245,7 +245,10 @@ class Simulation():
         for entity in self.solar_system.entities:
             entity.sim_rate = self.sim_rate
             semimajor_axes.append(entity.a)
-        self.set_scale(max(semimajor_axes))
+        try:
+            self.set_scale(max(semimajor_axes))
+        except ValueError:
+            self.set_scale(1)
 
         font_dir = '{}/fonts/Inconsolata.ttf'.format(os.path.dirname(__file__))
         font = pygame.font.Font(font_dir, 14)
