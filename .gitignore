@@ -3,3 +3,4 @@ __pycache__
 orbital_sim.egg-info
 dist
 .vscode
+test.py
