@@ -1,6 +1,5 @@
 import math
 from astropy.constants import G
-import numpy as np
 
 def add_vectors(vector1, vector2):
     # vectors are quantities with a magnitude and direction
@@ -31,9 +30,7 @@ class Entity():
         # angle: angle of initial velocity given in rad
         # (if applicable) e: orbit eccentricity, 0-1
         # (if applicable) a: semi-major axis measured in AU
-
-        # self.x, self.y = position
-        self.position = np.array(position)
+        self.x, self.y = position
         self.diameter = diameter
         self.mass = mass
         self.density = self.mass / (4/3 * math.pi * (self.diameter/2)**3)
@@ -42,9 +39,8 @@ class Entity():
         self.colour = (255, 255, 255)
         self.name = name
 
-        # self.speed = 0
-        # self.angle = 0
-        self.velocity = np.zeros(2)
+        self.speed = 0
+        self.angle = 0
 
         # sim_rate: externally set, describes the number of days that pass in the simulation for every real life second (realtime is 1.2e-5)
         # delta_t: the time in ms between frames used to keep simulation rate consistent
@@ -63,32 +59,21 @@ class Entity():
         # adjust speed for days past per frame
         # calculates next x, y position 
         dpu = self.days_per_update()
-        # self.x += math.sin(self.angle) * self.speed * dpu
-        # self.y -= math.cos(self.angle) * self.speed * dpu # subtract because of pygame's coord system
-        d_pos = (self.velocity * dpu) * [1., -1.]
-        self.position += d_pos
+        self.x += math.sin(self.angle) * self.speed * dpu
+        self.y -= math.cos(self.angle) * self.speed * dpu # subtract because of pygame's coord system
 
     def accelerate(self, acceleration):
         # adjusts magnitude of acceleration for days past per frame
         # combine apply acceleration to velocity vector
         acc_mag, acc_angle = acceleration
         acc_mag *= self.days_per_update()
-
-        speed = math.hypot(self.position[0], self.position[1])
-        angle = math.atan2(self.position[1], self.position[0])
-        new_speed, new_angle = add_vectors((speed, angle), (acc_mag, acc_angle))
-
-        x = new_speed * math.cos(new_angle)
-        y = new_speed * math.sin(new_angle)
-
-        self.position = np.array([x, y])
+        self.speed, self.angle = add_vectors((self.speed, self.angle), (acc_mag, acc_angle))
 
     def attract(self, other):
-        # dx = self.x - other.x
-        # dy = self.y - other.y
-        d_pos = self.position - other.position
-        theta = math.atan2(d_pos[1], d_pos[0])
-        distance = math.hypot(d_pos[0], d_pos[1])
+        dx = self.x - other.x
+        dy = self.y - other.y
+        theta = math.atan2(dy, dx)
+        distance = math.hypot(dx, dy)
 
         # calculate attractive force due to gravity using Newton's law of universal gravitation:
         # F = G * m1 * m2 / r^2

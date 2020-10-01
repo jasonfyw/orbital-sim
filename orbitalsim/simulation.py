@@ -280,9 +280,8 @@ class Simulation():
                 # calculate pygame x, y coords 
                 # this zooming stuff/scale is super sketchy yikes
                 relative_scale = self.scale / self.default_scale
-                position = entity.position
-                x = int(relative_scale * ((self.scale * position[0]) + self.dx) + self.offsetx)
-                y = int(relative_scale * ((self.scale * -position[1]) + self.dy) + self.offsety) # reflected across y-axis to compensate for pygame's reversed axes
+                x = int(relative_scale * ((self.scale * entity.x) + self.dx) + self.offsetx)
+                y = int(relative_scale * ((self.scale * -entity.y) + self.dy) + self.offsety) # reflected across y-axis to compensate for pygame's reversed axes
                 r = abs(int(entity.diameter * self.scale * self.entity_scale / 2 ))
 
                 # additional stuff to make entities look nicer at large distances
@@ -293,7 +292,7 @@ class Simulation():
                     if r < 2:
                         r = 2
 
-                pygame.draw.circle(self.window, entity.colour, [x, y], r, 0)
+                pygame.draw.circle(self.window, entity.colour, (x, y), r, 0)
 
                 label = font.render(entity.name, False, (180, 180, 180))
                 entity_labels.append((label, (x + 3 + r, y + 3 + r)))

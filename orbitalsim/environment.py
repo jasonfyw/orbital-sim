@@ -17,8 +17,6 @@ class OrbitalSystem():
         a = 1,
         name = ''
     ):
-        x, y = position
-        position = (float(x), float(y))
         entity = Entity(position, diameter, mass, e, a, name)
         entity.speed = speed
         entity.angle = angle
